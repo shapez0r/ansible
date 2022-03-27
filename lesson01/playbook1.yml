@@ -1,0 +1,55 @@
+---
+- name: running web server
+  user: ansible
+  become: yes
+  become_method: sudo
+  become_user: root
+  hosts: all
+
+  tasks:
+  - name: make sure apache is installed
+    ansible.builtin.package:
+      name: "{{apache_package}}"
+      state: present
+
+  - name: make sure httpd service is running and activated 
+    ansible.builtin.service:
+      name: "{{apache_service}}"
+      enabled: yes
+      state: started
+
+  - name: make sure apache has helloworld file
+    ansible.builtin.copy:
+      dest: "/var/www/html/index.html"
+      content: “Welcome to my web server”
+
+  - name: make sure firewalld is installed
+    ansible.builtin.package:
+      name: "{{firewall_package}}"
+      state: present
+
+  - name: make sure firewalld service is running and activated
+    ansible.builtin.service:
+      name: "{{firewall_service}}"
+      enabled: yes
+      state: started
+
+  - name: make sure https traffic is allowed
+    ansible.posix.firewalld:
+      service: https
+      permanent: yes
+      state: enabled
+
+  - name: make sure http traffic is allowed
+    ansible.posix.firewalld:
+      service: http
+      permanent: yes
+      state: enabled
+
+  - name: make sure firewalld is reloaded after fw changes
+    ansible.builtin.service:
+      name: firewalld
+      enabled: yes
+      state: reloaded
+
+
