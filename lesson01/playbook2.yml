@@ -21,7 +21,7 @@
 
   - name: make sure helloworld file is removed
     ansible.builtin.file
-      path: "/var/www/html/index.html"
+      path: "{{/var/www/html/index.html}}"
       state: absent
 
   - name: make sure firewalld is installed
