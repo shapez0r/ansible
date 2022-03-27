@@ -3,6 +3,7 @@
   become: yes
   become_method: su
   become_user: root
+  hosts: all
 
   tasks:
   - name: install httpd
