@@ -1,0 +1,41 @@
+---
+- name: Kernel options added to grub
+  user: ansible
+  become: yes
+  become_method: sudo
+  become_user: root
+  hosts: all
+
+  tasks:
+
+  - name: Ensure net.ifnames=0 is added to kernel options in /etc/default/grub
+    vars:
+      kerneloption: "net.ifnames=0"
+    ansible.builtin.lineinfile:
+      path: "/etc/default/grub"
+      regexp: '^(GRUB_CMDLINE_LINUX=(?!.*\b{{ kerneloption }}\b).*)"$'
+      #regexp: "^(GRUB_CMDLINE_LINUX=\".*)\"$"
+      line: '\1 {{ kerneloption }}"'
+      state: present
+      backrefs: yes
+      backup: yes
+
+  - name: Ensure biosdevname=0 is added to kernel options in /etc/default/grub
+    vars:
+      kerneloption: "biosdevname=0"
+    ansible.builtin.lineinfile:
+      path: "/etc/default/grub"
+      regexp: '^(GRUB_CMDLINE_LINUX=(?!.*\b{{ kerneloption }}\b).*)"$'
+      #regexp: "^(GRUB_CMDLINE_LINUX=\".*)\"$"
+      line: '\1 {{ kerneloption }}"'
+      state: present
+      backrefs: yes
+      backup: yes
+
+  - name: Ensure we have grub2-mkconfig command
+    ansible.builtin.package:
+      name: grub2-tools
+      state: present    
+
+  - name: Run grub2-mkconfig to ensure settings are applied
+    ansible.builtin.command: grub2-mkconfig
