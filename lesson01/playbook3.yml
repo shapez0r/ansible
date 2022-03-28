@@ -14,7 +14,6 @@
     ansible.builtin.lineinfile:
       path: "/etc/default/grub"
       regexp: '^(GRUB_CMDLINE_LINUX=(?!.*\b{{ kerneloption }}\b).*)"$'
-      #regexp: "^(GRUB_CMDLINE_LINUX=\".*)\"$"
       line: '\1 {{ kerneloption }}"'
       state: present
       backrefs: yes
@@ -26,7 +25,6 @@
     ansible.builtin.lineinfile:
       path: "/etc/default/grub"
       regexp: '^(GRUB_CMDLINE_LINUX=(?!.*\b{{ kerneloption }}\b).*)"$'
-      #regexp: "^(GRUB_CMDLINE_LINUX=\".*)\"$"
       line: '\1 {{ kerneloption }}"'
       state: present
       backrefs: yes
