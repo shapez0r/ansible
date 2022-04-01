@@ -1,0 +1,28 @@
+---
+- name: create users
+  hosts: all
+  vars_files:
+    - vars/users
+  tasks:
+    - name: "Debug"
+      debug:
+        var: users      
+    - name: make sure users are created
+      ansible.builtin.user:
+        name: "{{ item.value.username }}"
+        comment: "{{ item.value.comment }}"
+        password: "{{ item.value.password | password_hash('sha512') }}"
+        shell: "{{ item.value.shell }}"
+        state: present
+      loop: "{{ users|dict2items }}"
+    
+    - name: check if users can login with their passwords
+      shell: /usr/bin/sshpass -p "{{ item.value.password }}" ssh -o "UserKnownHostsFile=/dev/null" -o "StrictHostKeyChecking=no" "{{ item.value.username }}"@localhost "hostname;id"
+      register: ssh_output
+      loop: "{{ users|dict2items }}"
+      ignore_errors: true
+
+    - name: "Debug ssh"
+      debug:
+        msg: "{{ item.stdout_lines }}"
+      loop: "{{ssh_output.results}}" 
