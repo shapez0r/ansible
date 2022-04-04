@@ -29,7 +29,7 @@
       state: started
 
   - name: make sure https traffic is allowed
-    ansible.posix.firewalld:
+    firewalld:
       service: https
       permanent: yes
       state: enabled

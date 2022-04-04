@@ -63,7 +63,7 @@
       state: started
 
   - name: make sure active ftp traffic is allowed
-    ansible.posix.firewalld:
+    firewalld:
       port: "{{ ftp_ports }}/tcp"
       permanent: yes
       state: enabled
