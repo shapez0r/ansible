@@ -1,0 +1,10 @@
+anonymous_enable=YES
+no_anon_password=YES
+local_enable=YES
+write_enable=YES
+anon_max_rate=2048000
+xferlog_enable=YES
+listen=YES
+anon_root={{ ftp_pub_upload }}
+pasv_min_port={{ ftp_min_passive_port }}
+pasv_max_port={{ ftp_max_passive_port }}

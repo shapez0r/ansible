@@ -1,0 +1,10 @@
+---
+# vars file for debian-like webserver
+ftp_package: vsftpd
+ftp_service: vsftpd
+ftp_ports: "20-21"
+ftp_min_passive_port: 30000
+ftp_max_passive_port: 31000
+ftp_pub_upload: /var/ftp/pub/upload
+firewall_package: firewalld
+firewall_service: firewalld

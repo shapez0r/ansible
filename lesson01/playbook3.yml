@@ -1,9 +1,5 @@
 ---
 - name: Kernel options added to grub
-  user: ansible
-  become: yes
-  become_method: sudo
-  become_user: root
   hosts: all
 
   tasks:

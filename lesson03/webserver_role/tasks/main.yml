@@ -1,24 +1,21 @@
----
-- name: stopped and removed web server
-  hosts: all
+  - name: take vars for el-like
+    include_vars: "{{ ansible_os_family|lower }}"
 
-  tasks:
-
-  - name: make sure httpd service is stopped and disabled
-    ansible.builtin.service:
-      name: "{{apache_service}}"
-      enabled: no
-      state: stopped
-
-  - name: make sure apache is removed
+  - name: make sure apache is installed
     ansible.builtin.package:
       name: "{{apache_package}}"
-      state: absent
+      state: present
 
-  - name: make sure helloworld file is removed
-    ansible.builtin.file:
-      path: "/var/www/html/index.html"
-      state: absent
+  - name: make sure httpd service is running and activated 
+    ansible.builtin.service:
+      name: "{{apache_service}}"
+      enabled: yes
+      state: started
+
+  - name: make sure apache has helloworld file
+    ansible.builtin.copy:
+      src: index.html
+      dest: "/var/www/html/index.html"
 
   - name: make sure firewalld is installed
     ansible.builtin.package:
@@ -31,17 +28,17 @@
       enabled: yes
       state: started
 
-  - name: make sure traffic for https is denied
+  - name: make sure https traffic is allowed
     ansible.posix.firewalld:
       service: https
       permanent: yes
-      state: disabled
+      state: enabled
 
-  - name: make sure traffic for http is denied
+  - name: make sure http traffic is allowed
     ansible.posix.firewalld:
       service: http
       permanent: yes
-      state: disabled
+      state: enabled
 
   - name: make sure firewalld is reloaded after fw changes
     ansible.builtin.service:

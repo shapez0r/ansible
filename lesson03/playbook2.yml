@@ -1,0 +1,7 @@
+---
+- name: running web server
+  hosts: ftpservers
+
+  roles:
+    - ftpserver_role
+

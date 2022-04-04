@@ -1,0 +1,83 @@
+  - name: take vars for el-like
+    include_vars: "{{ ansible_os_family|lower }}"
+
+  - name: make sure SELinux is disabled
+    selinux:
+      state: disabled
+    register: selinux_state
+
+  - name: reboot
+    reboot:
+    when: selinux_state.changed
+
+  - name: wait for ssh available
+    wait_for:
+      port: 22
+      delay: 10
+      timeout: 100
+
+  - name: make sure ftp package is installed
+    ansible.builtin.package:
+      name: "{{ftp_package}}"
+      state: present
+
+  - name: make sure ftp service is running and activated 
+    ansible.builtin.service:
+      name: "{{ftp_service}}"
+      enabled: yes
+      state: started
+
+  - name: make sure ftp has needed config file
+    ansible.builtin.template:
+      src: "{{ ansible_os_family|lower }}.vsftpd.conf.j2"
+      dest: /etc/vsftpd/vsftpd.conf
+
+  - name: make sure ftp service is restarted after config changes
+    ansible.builtin.service:
+      name: vsftpd
+      enabled: yes
+      state: restarted
+
+  - name: make sure ftp upload folder is created
+    ansible.builtin.file:
+      path: "{{ ftp_pub_upload }}"
+      state: directory
+      mode: 0755
+      owner: root
+      group: root
+
+  - name: make sure test content is created
+    ansible.builtin.copy:
+      src: testfile.txt
+      dest: "{{ ftp_pub_upload }}/testfile"
+
+  - name: make sure firewalld is installed
+    ansible.builtin.package:
+      name: "{{firewall_package}}"
+      state: present
+
+  - name: make sure firewalld service is running and activated
+    ansible.builtin.service:
+      name: "{{firewall_service}}"
+      enabled: yes
+      state: started
+
+  - name: make sure active ftp traffic is allowed
+    ansible.posix.firewalld:
+      port: "{{ ftp_ports }}/tcp"
+      permanent: yes
+      state: enabled
+
+  - name: make sure passive ftp traffic is allowed
+    ansible.posix.firewalld:
+      port: "{{ ftp_min_passive_port }}-{{ ftp_max_passive_port }}/tcp"
+      permanent: yes
+      state: enabled
+
+  - name: make sure firewalld is reloaded after fw changes
+    ansible.builtin.service:
+      name: firewalld
+      enabled: yes
+      state: reloaded
+
+

@@ -1,0 +1,5 @@
+[webservers]
+node[1:2].example.com
+
+[ftpservers]
+node1.example.com

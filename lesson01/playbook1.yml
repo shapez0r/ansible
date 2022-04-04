@@ -1,9 +1,5 @@
 ---
 - name: running web server
-  user: ansible
-  become: yes
-  become_method: sudo
-  become_user: root
   hosts: all
 
   tasks:

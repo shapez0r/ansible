@@ -1,0 +1,6 @@
+---
+# vars file for debian-like webserver
+apache_package: apache2
+apache_service: apache2
+firewall_package: firewalld
+firewall_service: firewalld

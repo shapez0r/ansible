@@ -1,0 +1,6 @@
+---
+# vars file for EL-like webserver
+apache_package: httpd
+apache_service: httpd
+firewall_package: firewalld
+firewall_service: firewalld

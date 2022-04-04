@@ -1,0 +1,7 @@
+---
+- name: running web server
+  hosts: webservers
+
+  roles:
+    - webserver_role
+
