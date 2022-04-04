@@ -35,7 +35,7 @@
       state: enabled
 
   - name: make sure http traffic is allowed
-    ansible.posix.firewalld:
+    firewalld:
       service: http
       permanent: yes
       state: enabled
